@@ -1,0 +1,89 @@
+{block content}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="my-5">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-center mb-3">
+                        <div class="container-fluid">
+                            <a class="navbar-brand" href="#">Můj blog</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+                                <ul class="navbar-nav">
+                                    <li class="nav-item">
+                                        <a class="nav-link" n:href="Edit:create" n:if="$user->isLoggedIn()">Vytvořit příspěvek</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" n:href="Sign:in" n:if="!$user->isLoggedIn()">Přihlásit se</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" n:href="Sign:up" n:if="!$user->isLoggedIn()">Registrovat se</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" n:href="Sign:out" n:if="$user->isLoggedIn()">Odhlásit se</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" n:href="Dashboard:default" n:if="$user->isInRole('administrator')">Administrace</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" n:href="Dashboard:post" n:if="$user->isLoggedIn() && !$user->isInRole('administrator')">Spravovat příspěvky</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="posts">
+                    {foreach $posts as $post}
+                        <a n:href="Post:show $post->id" class="text-decoration-none text-dark"> <!-- Anchor tag wrapping post container -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    {if (!$user->isLoggedIn() && $post->status !== 'ARCHIVED') || $user->isLoggedIn()}
+                                        <h2 class="card-title">{$post->title}</h2> <!-- Removed anchor tag from title -->
+                                        {if $post->image}
+                                            <img src="{$basePath}/{$post->image}" class="img-fluid rounded mb-3" alt="Obrázek k článku {$post->title}">
+                                        {/if}
+                                        <div class="date mb-3"><small class="text-muted">{$post->created_at|date:'F j, Y'}</small></div>
+                                        <div class="post mb-3">{$post->status}</div>
+                                        <p class="card-text mb-0">Počet zhlédnutí: {$post->views}</p>
+                                    {/if}
+                                </div>
+                            </div>
+                        </a>
+                    {/foreach}
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="pagination mt-4">
+                    <ul class="pagination justify-content-center">
+                        {if $page > 1}
+                            <li class="page-item"><a n:href="default, 1" class="page-link">První</a></li>
+                            <li class="page-item"><a n:href="default, $page - 1" class="page-link">Předchozí</a></li>
+                        {/if}
+
+                        <li class="page-item disabled"><span class="page-link">Stránka {$page} z {$lastPage}</span></li>
+
+                        {if $page < $lastPage}
+                            <li class="page-item"><a n:href="default, $page + 1" class="page-link">Další</a></li>
+                            <li class="page-item"><a n:href="default, $lastPage" class="page-link">Poslední</a></li>
+                        {/if}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">© 2024 Můj blog. Všechna práva vyhrazena.</span>
+        </div>
+    </footer>
+{/block}

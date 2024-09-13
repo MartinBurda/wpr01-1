@@ -1,0 +1,40 @@
+{block content}
+    <style>
+        /* Styl pro animaci */
+        .card {
+            opacity: 0; /* Počáteční stav: průhlednost 0 */
+            transition: opacity 0.5s ease-in-out; /* Plynulý přechod průhlednosti trvá 0.5 sekundy s efektem ease-in-out */
+        }
+
+        /* Zobrazení karty po načtení stránky */
+        .card.loaded {
+            opacity: 1; /* Konečný stav: plná průhlednost */
+        }
+    </style>
+
+    <div class="container-fluid">
+        <div class="row justify-content-center align-items-center vh-100">
+            <div class="col-lg-6">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body">
+                        <h1 class="text-center mb-4" n:block=title>Přihlásit Se</h1>
+
+                        {include bootstrap-form signInForm}
+
+                        <p class="text-center mt-3">Nemáš ještě účet? <a n:href="up" class="text-decoration-none">Registrovat se</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Získání karty
+            const card = document.querySelector('.card');
+
+            // Přidání třídy "loaded" po načtení stránky, což spustí animaci fadingu
+            card.classList.add('loaded');
+        });
+    </script>
+{/block}
