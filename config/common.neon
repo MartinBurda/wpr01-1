@@ -10,6 +10,6 @@ application:
 
 
 database:
-	dsn: 'mysql:host=127.0.0.1;dbname=database'
+	dsn: 'mysql:host=127.0.0.1;dbname=wrp01-1'
 	user: root
 	password: root
