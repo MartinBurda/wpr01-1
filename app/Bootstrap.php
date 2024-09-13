@@ -27,7 +27,7 @@ class Bootstrap
 		// Learn more about Tracy at https://tracy.nette.org
 		$configurator->enableTracy($appDir . '/log');
 
-		$configurator->setDebugMode(false);
+		$configurator->setDebugMode(true);
 		$configurator->setTempDirectory($appDir . '/temp');
 
 		// Add configuration files
