@@ -161,5 +161,12 @@ final class PostFacade
 
         $comment->update(['content' => $content]);
     }
+    
+    public function getPostByCategoryId(int $categoryId)
+    {
+        return $this->database
+            ->table('posts')
+            ->where('category_id', $categoryId);
+    }
 
 }

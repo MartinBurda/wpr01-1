@@ -25,4 +25,8 @@ final class HomePresenter extends Nette\Application\UI\Presenter
 		$this->template->page = $page;
 		$this->template->lastPage = $lastPage;
 	}
+	public function renderCategory(int $categoryId){
+		$posts = $this->facade->getPostByCategoryId($categoryId);
+		$this->template->posts = $posts;
+	}
 }

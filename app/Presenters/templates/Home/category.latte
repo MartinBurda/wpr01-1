@@ -1,0 +1,24 @@
+{block content}
+<div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="posts">
+                    {foreach $posts as $post}
+                        <a n:href="Post:show $post->id" class="text-decoration-none text-dark"> <!-- Anchor tag wrapping post container -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    {if (!$user->isLoggedIn() && $post->status !== 'ARCHIVED') || $user->isLoggedIn()}
+                                        <h2 class="card-title">{$post->title}</h2> <!-- Removed anchor tag from title -->
+                                        {if $post->image}
+                                            <img src="{$basePath}/{$post->image}" class="img-fluid rounded mb-3" alt="Obrázek k článku {$post->title}">
+                                        {/if}
+                                        <div class="date mb-3"><small class="text-muted">{$post->created_at|date:'F j, Y'}</small></div>
+                                        <div class="post mb-3">{$post->status}</div>
+                                        <p class="card-text mb-0">Počet zhlédnutí: {$post->views}</p>
+                                    {/if}
+                                </div>
+                            </div>
+                        </a>
+                    {/foreach}
+                </div>
+            </div>
+        </div>
