@@ -26,29 +26,41 @@ final class DashboardPresenter extends Nette\Application\UI\Presenter
         }
     }
 
-    public function renderDefault(string $search = null): void
-    {
-        if (!$this->getUser()->isInRole('administrator')) {
-            
-            $this->flashMessage('Nemáš dostatečné oprávnění k prohlížení této stránky.', 'warning');
-            $this->redirect('Home:default');
-            
-        }
-
-        // Nastavíme backlink na hodnotu 'admin'
-        $this->getSession('admin')->backlink = 'admin';
-
-        $users = $search !== null ? $this->userFacade->getUsersByName($search) : $this->userFacade->getUsers();
-    
-        // Kontrola, zda vyhledávané jméno existuje
-        if ($search !== null && count($users) === 0) {
-            $this->flashMessage("Nebyli nalezeni žádní uživatelé se zadaným jménem.", 'error');
-            $this->redirect('Dashboard:default');
-        }
-    
-        $this->template->users = $users;
-        $this->template->search = $search;
+    public function renderDefault(string $search = null, string $role = null): void
+{
+    // Zkontrolujeme, zda je uživatel administrátor
+    if (!$this->getUser()->isInRole('administrator')) {
+        $this->flashMessage('Nemáš dostatečné oprávnění k prohlížení této stránky.', 'warning');
+        $this->redirect('Home:default');
     }
+
+    // Nastavíme backlink na hodnotu 'admin'
+    $this->getSession('admin')->backlink = 'admin';
+
+    // Podmínka pro hledání uživatelů podle jména
+    if ($search !== null) {
+        $users = $this->userFacade->getUsersByName($search);
+    } else {
+        // Pokud je role zadaná, použijeme ji pro filtrování
+        if ($role !== null) {
+            $users = $this->userFacade->getUserByRole($role);
+        } else {
+            // Pokud není zadaná role ani jméno, vrátíme všechny uživatele
+            $users = $this->userFacade->getUsers();
+        }
+    }
+
+    // Kontrola, zda vyhledávané jméno existuje
+    if ($search !== null && count($users) === 0) {
+        $this->flashMessage("Nebyli nalezeni žádní uživatelé se zadaným jménem.", 'error');
+        $this->redirect('Dashboard:default');
+    }
+
+    // Předáme uživatele a vyhledávací dotaz do šablony
+    $this->template->users = $users;
+    $this->template->search = $search;
+}
+
 
 
     public function renderPost(): void

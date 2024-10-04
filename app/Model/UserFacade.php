@@ -136,7 +136,13 @@ public function changePassword(int $userId, string $newPassword): void
     ]);
 }
 
-
+public function getUserByRole(string $role)
+{
+    return $this->database
+        ->table('users')
+        ->where('role', $role)
+        ->fetchAll();
+}
 }
 
     

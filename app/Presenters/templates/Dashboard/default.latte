@@ -43,6 +43,21 @@
                 {if isset($search)}
                     <a n:href="Dashboard:default" class="btn btn-secondary mb-3">Zobrazit všechny uživatele</a>
                 {/if}
+                <div class="dropdown">
+            <div class="dropdown">
+                <a class="btn btn-secondary dropdown-toggle mb-3" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    Filtrovat
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <li><a class="dropdown-item" n:href="Dashboard:default, role => 'administrator'">Role: Administrator</a></li>
+                    <li><a class="dropdown-item" n:href="Dashboard:default, role => 'uzivatel'">Role: Uživatel</a></li>
+                    <li><a class="dropdown-item" n:href="Dashboard:default">Všechny role</a></li>
+                </ul>
+            </div>
+             
+                
+
+
 
                 <table class="table">
                     <thead>
