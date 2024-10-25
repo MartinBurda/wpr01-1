@@ -1,16 +1,16 @@
 services:
-	- App\Router\RouterFactory::createRouter
-	- App\Model\PostFacade
-	- App\Model\UserFacade
-	- App\Forms\FormFactory
-	- App\Forms\SignInFormFactory
-	- App\Forms\SignUpFormFactory
+    - App\Router\RouterFactory::createRouter
+    - App\Model\PostFacade
+    - App\Forms\FormFactory
+    - App\Forms\SignInFormFactory
+    - App\Forms\SignUpFormFactory
 
+    # Hlavní autentizátor pro klasické přihlášení
+    - App\Model\UserFacade
 
-search:
-	-	in: %appDir%
-		classes:
-			- *Factory
-			- *Facade
+    # Google autentizátor pojmenovaný jako `googleAuthenticator`
+    googleAuthenticator: App\Model\GoogleAuthenticator
 
-	
+    security.user:
+        setup:
+            - setAuthenticator(@App\Model\UserFacade) # Nastavení výchozího autentizátoru

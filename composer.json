@@ -19,7 +19,9 @@
 		"nette/utils": "^4.0",
 		"latte/latte": "^3.0",
 		"tracy/tracy": "^2.9",
-		"ckeditor/ckeditor": "^4.24"
+		"ckeditor/ckeditor": "^4.24",
+		"contributte/oauth2-client": "^0.3.3",
+		"league/oauth2-google": "^4.0"
 	},
 	"require-dev": {
 		"nette/tester": "^2.4",

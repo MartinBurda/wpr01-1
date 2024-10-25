@@ -10,6 +10,7 @@ use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Form;
+use App\Model\GoogleAuthenticator;
 
 
 /**
@@ -118,4 +119,41 @@ protected function createComponentSignUpForm(): Form
 		$this->getUser()->logout();
 		$this->redirect('Home:default');
 	}
+
+    /**
+ * Přesměruje uživatele na přihlašovací stránku Google.
+ */
+public function actionLoginWithGoogle(): void
+{
+	$this->redirectUrl($this->googleAuthenticator->getAuthorizationUrl());
+}
+
+/**
+ * Zpracuje zpětné volání od Google a přihlásí uživatele.
+ */
+public function actionCallback(): void
+{
+	$code = $this->getParameter('code');
+	if ($code) {
+		try {
+			// Získání přístupového tokenu
+			$accessToken = $this->googleAuthenticator->getAccessToken($code);
+			
+			// Autentizace uživatele
+			$identity = $this->googleAuthenticator->authenticate([$accessToken]);
+			$this->getUser()->login($identity);
+			
+			// Přesměrování na domovskou stránku po přihlášení
+			$this->redirect('Homepage:default');
+		} catch (\Exception $e) {
+			// Zpracování chyby v případě selhání přihlášení
+			$this->flashMessage('Login with Google failed', 'error');
+			$this->redirect('Sign:in');
+		}
+	} else {
+		$this->flashMessage('Authorization was not approved.', 'error');
+		$this->redirect('Sign:in');
+	}
+}
+
 }
