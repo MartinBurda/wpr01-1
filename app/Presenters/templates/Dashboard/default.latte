@@ -62,26 +62,32 @@
                 <table class="table">
                     <thead>
                         <tr>
+                            <th scope="col">Img</th>
                             <th scope="col">Uživatelské jméno</th>
                             <th scope="col">Jméno</th>
                             <th scope="col">Příjmení</th>
                             <th scope="col">Email</th>
                             <th scope="col">Role</th>
-                            <th scope="col">Img</th>
                             <th scope="col" colspan="2">Akce</th>
                         </tr>
                     </thead>
                     <tbody>
                         {foreach $users as $u}
                             <tr>
+                                <td>
+                                    {if $u->image}
+                                        <img src="{$basePath}/{$u->image}" alt="Profilový obrázek" class="rounded-circle" width="35" height="35">
+                                    {else}
+                                        <img src="{$basePath}uploads/default/user.png" alt="Výchozí profilový obrázek" class="rounded-circle" width="35" height="35">
+                                    {/if}
+                                </td>
                                 <td>{$u->username}</td>
                                 <td>{$u->name}</td>
                                 <td>{$u->surname}</td>
                                 <td>{$u->email}</td>
                                 <td>{$u->role}</td>
-                                <td>{$u->image}</td>
                                 <td><a n:href="deleteUser! $u->id" class="btn btn-danger">Smazat uživatele</a></td>
-                                <td><a n:href="ChangePassword:default, userId => $u->id" class="btn btn-secondary">Změnit heslo</a></td>
+                                <td><a class="btn btn-sm btn-primary" n:href="User:edit, $u->id">Upravit</a></td>
                             </tr>
                         {/foreach}
                     </tbody>
