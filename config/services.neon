@@ -8,9 +8,6 @@ services:
     # Hlavní autentizátor pro klasické přihlášení
     - App\Model\UserFacade
 
-    # Google autentizátor pojmenovaný jako `googleAuthenticator`
-    googleAuthenticator: App\Model\GoogleAuthenticator
-
     security.user:
         setup:
             - setAuthenticator(@App\Model\UserFacade) # Nastavení výchozího autentizátoru

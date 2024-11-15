@@ -45,7 +45,7 @@ class ChangePasswordPresenter extends Presenter
 }
     public function actionDefault(int $userId): void
     {
-        $user = $this->userFacade->getUsers($userId);
+        $user = $this->userFacade->getAllUsers($userId);
         if (!$user) {
             $this->error('Uživatel nebyl nalezen.');
         }

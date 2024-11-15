@@ -67,6 +67,7 @@
                             <th scope="col">Příjmení</th>
                             <th scope="col">Email</th>
                             <th scope="col">Role</th>
+                            <th scope="col">Img</th>
                             <th scope="col" colspan="2">Akce</th>
                         </tr>
                     </thead>
@@ -74,10 +75,11 @@
                         {foreach $users as $u}
                             <tr>
                                 <td>{$u->username}</td>
-                                <td>{$u->jmeno}</td>
-                                <td>{$u->prijmeni}</td>
+                                <td>{$u->name}</td>
+                                <td>{$u->surname}</td>
                                 <td>{$u->email}</td>
                                 <td>{$u->role}</td>
+                                <td>{$u->image}</td>
                                 <td><a n:href="deleteUser! $u->id" class="btn btn-danger">Smazat uživatele</a></td>
                                 <td><a n:href="ChangePassword:default, userId => $u->id" class="btn btn-secondary">Změnit heslo</a></td>
                             </tr>

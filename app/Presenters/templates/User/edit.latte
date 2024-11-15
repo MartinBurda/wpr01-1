@@ -1,0 +1,21 @@
+{block content}
+<div class="container mt-4">
+    <h2>Úprava uživatele: {$userData->username}</h2>
+    
+    <!-- Zobrazení profilového obrázku -->
+    <div class="profile-picture mb-3">
+        {if $userData->image && $userData->image != 'uploads/default/user.png'}
+            <img src="{$basePath}/{$userData->image}" alt="Profilový obrázek" class="img-thumbnail" width="150">
+            <div class="mt-2">
+                <a n:href="deleteImage! $userData->id" class="btn btn-danger">Odebrat obrázek</a>
+            </div>
+        {else}
+            <p class="text-muted">Uživatel nemá profilový obrázek. Můžete nahrát nový:</p>
+            <img src="{$basePath}/uploads/default/user.png" alt="Výchozí profilový obrázek" class="img-thumbnail" width="150">
+        {/if}
+    </div>
+
+    <!-- Formulář pro úpravu uživatele -->
+    {control editForm}
+</div>
+{/block}

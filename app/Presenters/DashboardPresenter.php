@@ -46,7 +46,7 @@ final class DashboardPresenter extends Nette\Application\UI\Presenter
             $users = $this->userFacade->getUserByRole($role);
         } else {
             // Pokud není zadaná role ani jméno, vrátíme všechny uživatele
-            $users = $this->userFacade->getUsers();
+            $users = $this->userFacade->getAllUsers();
         }
     }
 
