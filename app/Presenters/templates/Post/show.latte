@@ -1,65 +1,93 @@
-
 {block content}
+<!-- Načtení knihovny nette.ajax.js -->
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Navigační tlačítka -->
+            <div class="mb-3 pt-5">
+                <a n:href="Edit:create" class="btn btn-outline-success" n:if="$user->isLoggedIn()">Vytvořit příspěvek</a>
+                <a n:href="Home:default" class="btn btn-outline-secondary">← Zpět na výpis příspěvků</a>
+            </div>
 
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="mb-3 pt-5"> <!-- Přidáno horní odsazení (padding-top: 5rem) -->
-                    <a n:href="Edit:create" class="btn btn-outline-success" n:if="$user->isLoggedIn()">Vytvořit příspěvek</a>
-                    <a n:href="Home:default" class="btn btn-outline-secondary">← Zpět na výpis příspěvků</a>
-                </div>
-
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h1>{$post->title}</h1>
-                            <div class="date">{$post->created_at|date:'F j, Y'}</div>
-                        </div>
-
-                        <div class="post mb-4">{$post->content|noescape}</div>
-
-                        <p>Počet zhlédnutí: {$post->views}</p>
-
-                        {if $post->image}
-                            <div class="mb-3">
-                                <img src="{$basePath}/{$post->image}" class="img-fluid rounded" style="max-width: 300px;" alt="Obrázek k článku {$post->title}">
-                            </div>
-                            <div class="mb-3">
-                                {if $user->isLoggedIn() && ($user->isInRole('administrator') || $user->id == $post->user_id)}
-                                    <a n:href="deleteImage! $post->id" class="btn btn-outline-danger">Smazat obrázek</a>
-                                {/if}
-                            </div>
-                        {/if}
-                        {if $user->isLoggedIn()}
-                            <div class="mb-3">
-                                <a n:href="Edit:edit $post->id" class="btn btn-outline-warning">Upravit příspěvek</a>
-                            </div>
-                        {/if}
-                        <div class="post mb-4">{$post->status}</div>
+            <!-- Příspěvek -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h1>{$post->title}</h1>
+                        <div class="date">{$post->created_at|date:'F j, Y'}</div>
                     </div>
-                </div>
 
-                <h2>Komentáře</h2>
+                    <div class="post mb-4">{$post->content|noescape}</div>
+                    <p>Počet zhlédnutí: {$post->views}</p>
 
-                {if $post->status !== 'ARCHIVED' && ($post->status !== 'CLOSED' || $user->isLoggedIn())}
-                    {if $user->isLoggedIn()}
-                        <div class="card mb-4">
-                            <div class="card-body form-style">
-                                {control commentForm}
-                            </div>
+                    <!-- Obrázek příspěvku -->
+                    {if $post->image}
+                        <div class="mb-3">
+                            <img src="{$basePath}/{$post->image}" class="img-fluid rounded" style="max-width: 300px;" alt="Obrázek k článku {$post->title}">
                         </div>
-                    {else}
-                        <p><a n:href="Sign:in" class="btn btn-primary">Přihlásit se</a></p>
+                        <div class="mb-3">
+                            {if $user->isLoggedIn() && ($user->isInRole('administrator') || $user->id == $post->user_id)}
+                                <a n:href="deleteImage! $post->id" class="btn btn-outline-danger">Smazat obrázek</a>
+                            {/if}
+                        </div>
                     {/if}
-                {/if}
 
-                <div class="comments">
-                    {foreach $comments as $comment}
-                            <p><b>{$comment->name}</b> napsal:</p>
-                            <div>{$comment->content|noescape}</div>
-                    {/foreach}
+                    <!-- Editace příspěvku -->
+                    {if $user->isLoggedIn()}
+                        <div class="mb-3">
+                            <a n:href="Edit:edit $post->id" class="btn btn-outline-warning">Upravit příspěvek</a>
+                        </div>
+                    {/if}
+
+                    <div class="post mb-4">{$post->status}</div>
                 </div>
             </div>
+
+            <!-- Komentáře -->
+            <h2>Komentáře</h2>
+            {if $post->status !== 'ARCHIVED' && ($post->status !== 'CLOSED' || $user->isLoggedIn())}
+                {if $user->isLoggedIn()}
+                    <div class="card mb-4">
+                        <div class="card-body form-style">
+                            {control commentForm}
+                        </div>
+                    </div>
+                {else}
+                    <p><a n:href="Sign:in" class="btn btn-primary">Přihlásit se</a></p>
+                {/if}
+            {/if}
+
+           <div n:snippet="postRating" class="post-rating">
+    {if $userRating === 1}
+        <a n:href="liked! $post->id, 0" class="btn btn-danger">⭐️</a>
+    {else}
+        <a n:href="liked! $post->id, 1" class="btn btn-success">☆</a>
+    {/if}
+</div>
+
+
+
+            <!-- Hodnocení -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/nette.ajax.js/2.4.0/nette.ajax.min.js"></script>
+            <script>
+              $(function () {
+    $.nette.init(); // Inicializuje nette.ajax.js
+});
+
+// Správná obsluha pro kliknutí na <a> v sekci .post-rating
+$(document).on('click', '.post-rating a', function (e) {
+    e.preventDefault(); // Zabrání defaultnímu chování odkazů
+    $.nette.ajax({
+        url: $(this).attr('href') // Získá URL z atributu href
+    });
+});
+
+
+            </script>
+
+
+
         </div>
     </div>
+</div>
 {/block}

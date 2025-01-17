@@ -19,37 +19,24 @@ class PostPresenter extends \Nette\Application\UI\Presenter
         $this->template->posts = $this->postFacade->getPostById('posts');
     }
 
-    public function renderShow(int $postId) {
-        $post = $this->postFacade->getPostbyId($postId);
-        $this->postFacade->addView($postId);
+    public function renderShow(int $postId)
+{
+    $post = $this->postFacade->getPostById($postId);
 
-        if (!$post) {
-            $this->error('Příspěvek nebyl nalezen');
-        }
-
-        $this->template->post = $post;
-        $this->template->comments = $this->postFacade->getComments($postId);
-
-        // Kontrola stavu příspěvku
-        switch ($post->status) {
-            case 'CLOSED':
-                if (!$this->getUser()->isLoggedIn()) {
-                    $this->flashMessage('Přidávání komentářů je povoleno pouze pro přihlášené uživatele.', 'warning');
-                }
-                // Pro uzavřené a otevřené příspěvky mohou komentovat všichni přihlášení uživatelé
-            case 'OPEN':
-            case 'ARCHIVED':
-                if ($post->status === 'ARCHIVED' && !$this->getUser()->isLoggedIn()) {
-                    $this->flashMessage('Nemáš právo vidět archived, kámo!', 'warning');
-                    $this->redirect('Home:');
-                }
-                // Pro archivované příspěvky je potřeba být přihlášený
-                $this->template->post = $post;
-                break;
-            default:
-                $this->error('Neplatný stav příspěvku.');
-        }
+    if (!$post) {
+        $this->error('Příspěvek nebyl nalezen.');
     }
+
+    $this->template->post = $post;
+
+    if ($this->getUser()->isLoggedIn()) {
+        $userId = $this->getUser()->getId();
+        $rating = $this->postFacade->getUserRating($userId, $postId);
+        $this->template->userRating = $rating ? $rating->likes : null;
+    } else {
+        $this->template->userRating = null;
+    }
+}
 
 
     protected function createComponentCommentForm(): Form
@@ -62,8 +49,6 @@ class PostPresenter extends \Nette\Application\UI\Presenter
 
         return $form;
     }
-
-
 
     public function commentFormSucceeded(Form $form, \stdClass $values): void
 {
@@ -121,4 +106,26 @@ class PostPresenter extends \Nette\Application\UI\Presenter
     // Předání komentáře do formuláře pro úpravu
     $this['commentForm']->setDefaults($comment->toArray());
 }
+public function handleLiked(int $postId, int $liked)
+{
+    if ($this->getUser()->isLoggedIn()) {
+        $userId = $this->getUser()->getId();
+        $this->postFacade->updateRating($userId, $postId, $liked);
+
+        if ($this->isAjax()) {
+            $this->redrawControl('postRating');
+        } else {
+            $this->redirect('this');
+        }
+    } else {
+        $this->flashMessage('Musíte být přihlášeni, abyste mohli hodnotit příspěvky.', 'warning');
+        $this->redirect('Sign:in');
+    }
+}
+
+
+
+
+
+
 }
