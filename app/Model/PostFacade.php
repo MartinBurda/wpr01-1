@@ -168,34 +168,37 @@ final class PostFacade
             ->table('posts')
             ->where('category_id', $categoryId);
     }
+    
+    public function updateRating(int $userId, int $postId, int $rating): void
+{
+    $existingRating = $this->database->table('rating')
+        ->where('user_id', $userId)
+        ->where('post_id', $postId)
+        ->fetch();
 
-    public function updateRating(int $userId, int $postId, int $liked): void
-    {
-        $existingRating = $this->database->table('rating')
-            ->where('user_id', $userId)
-            ->where('post_id', $postId)
-            ->fetch();
-    
-        if ($existingRating) {
-            $existingRating->update([
-                'likes' => $liked
-            ]);
-        } else {
-            $this->database->table('rating')->insert([
-                'user_id' => $userId,
-                'post_id' => $postId,
-                'likes' => $liked
-            ]);
-        }
+    if ($existingRating) {
+        $existingRating->update([
+            'likes' => $rating === 1 ? 1 : 0,
+            'dislikes' => $rating === -1 ? 1 : 0,
+        ]);
+    } else {
+        $this->database->table('rating')->insert([
+            'user_id' => $userId,
+            'post_id' => $postId,
+            'likes' => $rating === 1 ? 1 : 0,
+            'dislikes' => $rating === -1 ? 1 : 0,
+        ]);
     }
-    
-    public function getUserRating(int $userId, int $postId)
-    {
-        return $this->database->table('rating')
-            ->where('user_id', $userId)
-            ->where('post_id', $postId)
-            ->fetch();
-    }
+}
+
+public function getUserRating(int $userId, int $postId)
+{
+    return $this->database->table('rating')
+        ->where('user_id', $userId)
+        ->where('post_id', $postId)
+        ->fetch();
+}
+
     
 
 

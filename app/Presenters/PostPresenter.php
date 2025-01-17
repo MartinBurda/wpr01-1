@@ -19,7 +19,24 @@ class PostPresenter extends \Nette\Application\UI\Presenter
         $this->template->posts = $this->postFacade->getPostById('posts');
     }
 
-    public function renderShow(int $postId)
+    public function handleRated(int $postId, int $rating): void
+{
+    if ($this->getUser()->isLoggedIn()) {
+        $userId = $this->getUser()->getId();
+        $this->postFacade->updateRating($userId, $postId, $rating);
+
+        if ($this->isAjax()) {
+            $this->redrawControl('postRating');
+        } else {
+            $this->redirect('this');
+        }
+    } else {
+        $this->flashMessage('Musíte být přihlášeni, abyste mohli hodnotit příspěvky.', 'warning');
+        $this->redirect('Sign:in');
+    }
+}
+
+public function renderShow(int $postId): void
 {
     $post = $this->postFacade->getPostById($postId);
 
@@ -31,12 +48,15 @@ class PostPresenter extends \Nette\Application\UI\Presenter
 
     if ($this->getUser()->isLoggedIn()) {
         $userId = $this->getUser()->getId();
-        $rating = $this->postFacade->getUserRating($userId, $postId);
-        $this->template->userRating = $rating ? $rating->likes : null;
+        $userRating = $this->postFacade->getUserRating($userId, $postId);
+        $this->template->userRating = $userRating ? $userRating->likes : null;
+        $this->template->userDislike = $userRating ? $userRating->dislikes : null;
     } else {
         $this->template->userRating = null;
+        $this->template->userDislike = null;
     }
 }
+
 
 
     protected function createComponentCommentForm(): Form

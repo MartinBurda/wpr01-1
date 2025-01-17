@@ -57,13 +57,20 @@
                 {/if}
             {/if}
 
-           <div n:snippet="postRating" class="post-rating">
-    {if $userRating === 1}
-        <a n:href="liked! $post->id, 0" class="btn btn-danger">⭐️</a>
-    {else}
-        <a n:href="liked! $post->id, 1" class="btn btn-success">☆</a>
-    {/if}
-</div>
+        <div n:snippet="postRating" class="post-rating">
+            {if $userRating === 1}
+                <a n:href="rated! $post->id, 0" class="btn btn-danger">Unlike</a>
+            {else}
+                <a n:href="rated! $post->id, 1" class="btn btn-success">Like</a>
+            {/if}
+
+            {if $userDislike === 1}
+                <a n:href="rated! $post->id, 0" class="btn btn-secondary">Remove Dislike</a>
+            {else}
+                <a n:href="rated! $post->id, -1" class="btn btn-warning">Dislike</a>
+            {/if}
+        </div>
+
 
 
 
