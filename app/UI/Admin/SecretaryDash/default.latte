@@ -1,0 +1,80 @@
+{block css}
+<link rel="stylesheet" href="/css/secretary.css">
+{/block}
+
+{block content}
+<div class="dashboard-container">
+    <!-- Repair List (Left Column) -->
+    <div class="repair-list card">
+        <h3>Seznam oprav</h3>
+        <form method="get" action="{link 'SecretaryDash:default'}" class="search-form">
+            <input type="text" name="search" placeholder="Hledat (zařízení, zákazník)" value="{$search ?? ''}" class="form-control">
+            <input type="hidden" name="page" value="1">
+            <button type="submit" class="btn btn-primary btn-sm">Hledat</button>
+            {if $search}
+                <a href="{link 'SecretaryDash:default', page => 1}" class="btn btn-secondary btn-sm">Zrušit hledání</a>
+            {/if}
+        </form>
+        <ul class="list-group">
+            {foreach $repairs as $repair}
+                <a href="{link 'SecretaryDash:default', repairId => $repair->id, search => $search, page => $currentPage}" class="repair-link">
+                    <li class="list-group-item {if $selectedRepair && $repair->id === $selectedRepair->id}active{/if}">
+                        <strong>Zařízení:</strong> {$repair->device}<br>
+                        <small><strong>Zákazník:</strong> {$repair->name} {$repair->surname}</small><br>
+                        <small><strong>Status:</strong> <span class="badge bg-{$repair->status|lower}">{$repair->status}</span></small>
+                    </li>
+                </a>
+            {/foreach}
+        </ul>
+        {if $totalPages > 1}
+            <div class="pagination">
+                {if $currentPage > 1}
+                    <a href="{link 'SecretaryDash:default', search => $search, page => $currentPage - 1}" class="btn btn-sm btn-outline-primary">« Předchozí</a>
+                {/if}
+                <span>Stránka {$currentPage} z {$totalPages}</span>
+                {if $currentPage < $totalPages}
+                    <a href="{link 'SecretaryDash:default', search => $search, page => $currentPage + 1}" class="btn btn-sm btn-outline-primary">Další »</a>
+                {/if}
+            </div>
+        {/if}
+    </div>
+
+    <!-- Div1: Statistics Placeholder 1 -->
+    <div class="stats-1 card">
+        <h4>Statistika 1</h4>
+        <p>[Placeholder - Statistika bude doplněna později]</p>
+    </div>
+
+    <!-- Div2: Statistics Placeholder 2 -->
+    <div class="stats-2 card">
+        <h4>Statistika 2</h4>
+        <p>[Placeholder - Statistika bude doplněna později]</p>
+    </div>
+
+    <!-- Div3: Statistics Placeholder 3 -->
+    <div class="stats-3 card">
+        <div class="clock-container">
+            <canvas id="clock" width="150" height="150"></canvas>
+        </div>
+    </div>
+
+    <!-- Div4: Verify Repair Code -->
+    <div class="accept-repair card">
+        <h4>Přijmout opravu</h4>
+        {form verifyRepairCodeForm}
+            {input repair_code class => 'form-control', placeholder => 'např. WY261'}
+            {input submit class => 'btn btn-success btn-block mt-2'}
+        {/form}
+    </div>
+
+    <!-- Div6: Reserved for Future Use (Now with Logout) -->
+    <div class="future-use card">
+        <a href="{link :Front:Sign:out}" class="btn btn-danger btn-block">Odhlásit se</a>
+    </div>
+</div>
+
+
+{block scripts}
+<script src="/js/clock.js"></script>
+{/block}
+{/block}

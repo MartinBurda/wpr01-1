@@ -1,0 +1,250 @@
+{block css}
+<link rel="stylesheet" href="/css/tech.css">
+{/block}
+{block content}
+<div class="parent">
+    <!-- div1 -->
+    <div class="div1" n:snippet="repairSlot0">
+        {if isset($selectedRepairs[0]) && $selectedRepairs[0] !== null}
+            <div class="repair-details">
+                <h3 class="repair-title">Oprava č. {$selectedRepairs[0]->id}</h3>
+                <div class="repair-info">
+                    <table class="table table-bordered compact-table">
+                        <tbody>
+                            <tr><th>ID</th><td>{$selectedRepairs[0]->id}</td></tr>
+                            <tr><th>Zařízení</th><td>{$selectedRepairs[0]->device}</td></tr>
+                            <tr><th>Problém</th><td>{$selectedRepairs[0]->issue}</td></tr>
+                            <tr><th>Zákazník</th><td>{$selectedRepairs[0]->name} {$selectedRepairs[0]->surname}</td></tr>
+                            <tr><th>E-mail</th><td>{$selectedRepairs[0]->email}</td></tr>
+                            <tr><th>Telefon</th><td>{$selectedRepairs[0]->phone}</td></tr>
+                            <tr><th>Vytvořeno</th><td>{$selectedRepairs[0]->created_at|date:'d.m.Y H:i'}</td></tr>
+                            <tr>
+                                <th>Stav</th>
+                                <td>
+                                    <form method="post" action="{link updateStatus!}">
+                                        <input type="hidden" name="id" value="{$selectedRepairs[0]->id}">
+                                        <div class="d-flex">
+                                            <select name="status" class="form-select me-2" onchange="this.form.submit()">
+                                                {var $statuses = ['Pending', 'Approved', 'In Progress', 'Waiting for Parts', 'On Hold', 'Completed', 'Failed', 'Cancelled', 'Ready for Pickup', 'Delivered']}
+                                                {foreach $statuses as $status}
+                                                    <option value="{$status}" {if $selectedRepairs[0]->status == $status}selected{/if}>
+                                                        {$status}
+                                                    </option>
+                                                {/foreach}
+                                            </select>
+                                            <input type="text" name="status_description" class="form-control" value="{$selectedRepairs[0]->status_description}" placeholder="Zadejte poznámku">
+                                            <button type="submit" class="btn btn-primary ms-2">Uložit</button>
+                                        </div>
+                                        <noscript><button type="submit">Změnit stav</button></noscript>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="chat-section">
+                    <h4>Chat</h4>
+                    <div class="chat-messages">
+                        {foreach $chatMessages[0] as $msg}
+                            <div class="chat-message">
+                                <strong class="{if $msg->sender_id == $currentUserId}sender-me{else}sender-other{/if}">
+                                    {if $msg->sender_id == $currentUserId}Vy{else}Zákazník{/if}
+                                </strong>: {$msg->message}
+                                <small class="chat-time">{$msg->created_at|date:'H:i'}</small>
+                            </div>
+                        {/foreach}
+                    </div>
+                    <form method="post" action="{link SendMessage! 0}">
+                        <input type="hidden" name="repairId" value="{$selectedRepairs[0]->id}">
+                        <input type="text" name="message" class="form-control compact-input" placeholder="Napište zprávu...">
+                        <button type="submit" class="btn btn-primary btn-sm mt-1">Odeslat</button>
+                    </form>
+                </div>
+                <a href="{link CloseRepair! 0}" class="btn btn-sm btn-secondary mt-2">Zavřít</a>
+            </div>
+        {else}
+            <p>Vyberte opravu.</p>
+        {/if}
+    </div>
+
+    <!-- div2 -->
+    <div class="div2" n:snippet="repairSlot1">
+        {if isset($selectedRepairs[1]) && $selectedRepairs[1] !== null}
+            <div class="repair-details">
+                <h3 class="repair-title">Oprava č. {$selectedRepairs[1]->id}</h3>
+                <div class="repair-info">
+                    <table class="table table-bordered compact-table">
+                        <tbody>
+                            <tr><th>ID</th><td>{$selectedRepairs[1]->id}</td></tr>
+                            <tr><th>Zařízení</th><td>{$selectedRepairs[1]->device}</td></tr>
+                            <tr><th>Problém</th><td>{$selectedRepairs[1]->issue}</td></tr>
+                            <tr><th>Zákazník</th><td>{$selectedRepairs[1]->name} {$selectedRepairs[1]->surname}</td></tr>
+                            <tr><th>E-mail</th><td>{$selectedRepairs[1]->email}</td></tr>
+                            <tr><th>Telefon</th><td>{$selectedRepairs[1]->phone}</td></tr>
+                            <tr><th>Vytvořeno</th><td>{$selectedRepairs[1]->created_at|date:'d.m.Y H:i'}</td></tr>
+                            <tr>
+                                <th>Stav</th>
+                                <td>
+                                    <form method="post" action="{link updateStatus!}">
+                                        <input type="hidden" name="id" value="{$selectedRepairs[1]->id}">
+                                        <div class="d-flex">
+                                            <select name="status" class="form-select me-2" onchange="this.form.submit()">
+                                                {var $statuses = ['Pending', 'Approved', 'In Progress', 'Waiting for Parts', 'On Hold', 'Completed', 'Failed', 'Cancelled', 'Ready for Pickup', 'Delivered']}
+                                                {foreach $statuses as $status}
+                                                    <option value="{$status}" {if $selectedRepairs[1]->status == $status}selected{/if}>
+                                                        {$status}
+                                                    </option>
+                                                {/foreach}
+                                            </select>
+                                            <input type="text" name="status_description" class="form-control" value="{$selectedRepairs[1]->status_description}" placeholder="Zadejte poznámku">
+                                            <button type="submit" class="btn btn-primary ms-2">Uložit</button>
+                                        </div>
+                                        <noscript><button type="submit">Změnit stav</button></noscript>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="chat-section">
+                    <h4>Chat</h4>
+                    <div class="chat-messages">
+                        {foreach $chatMessages[1] as $msg}
+                            <div class="chat-message">
+                                <strong class="{if $msg->sender_id == $currentUserId}sender-me{else}sender-other{/if}">
+                                    {if $msg->sender_id == $currentUserId}Vy{else}Zákazník{/if}
+                                </strong>: {$msg->message}
+                                <small class="chat-time">{$msg->created_at|date:'H:i'}</small>
+                            </div>
+                        {/foreach}
+                    </div>
+                    <form method="post" action="{link SendMessage! 1}">
+                        <input type="hidden" name="repairId" value="{$selectedRepairs[1]->id}">
+                        <input type="text" name="message" class="form-control compact-input" placeholder="Napište zprávu...">
+                        <button type="submit" class="btn btn-primary btn-sm mt-1">Odeslat</button>
+                    </form>
+                </div>
+                <a href="{link CloseRepair! 1}" class="btn btn-sm btn-secondary mt-2">Zavřít</a>
+            </div>
+        {else}
+            <p>Vyberte opravu.</p>
+        {/if}
+    </div>
+
+    <!-- div3 -->
+    <div class="div3" n:snippet="repairSlot2">
+        {if isset($selectedRepairs[2]) && $selectedRepairs[2] !== null}
+            <div class="repair-details">
+                <h3 class="repair-title">Oprava č. {$selectedRepairs[2]->id}</h3>
+                <div class="repair-info">
+                    <table class="table table-bordered compact-table">
+                        <tbody>
+                            <tr><th>ID</th><td>{$selectedRepairs[2]->id}</td></tr>
+                            <tr><th>Zařízení</th><td>{$selectedRepairs[2]->device}</td></tr>
+                            <tr><th>Problém</th><td>{$selectedRepairs[2]->issue}</td></tr>
+                            <tr><th>Zákazník</th><td>{$selectedRepairs[2]->name} {$selectedRepairs[2]->surname}</td></tr>
+                            <tr><th>E-mail</th><td>{$selectedRepairs[2]->email}</td></tr>
+                            <tr><th>Telefon</th><td>{$selectedRepairs[2]->phone}</td></tr>
+                            <tr><th>Vytvořeno</th><td>{$selectedRepairs[2]->created_at|date:'d.m.Y H:i'}</td></tr>
+                            <tr>
+                                <th>Stav</th>
+                                <td>
+                                    <form method="post" action="{link updateStatus!}">
+                                        <input type="hidden" name="id" value="{$selectedRepairs[2]->id}">
+                                        <div class="d-flex">
+                                            <select name="status" class="form-select me-2" onchange="this.form.submit()">
+                                                {var $statuses = ['Pending', 'Approved', 'In Progress', 'Waiting for Parts', 'On Hold', 'Completed', 'Failed', 'Cancelled', 'Ready for Pickup', 'Delivered']}
+                                                {foreach $statuses as $status}
+                                                    <option value="{$status}" {if $selectedRepairs[2]->status == $status}selected{/if}>
+                                                        {$status}
+                                                    </option>
+                                                {/foreach}
+                                            </select>
+                                            <input type="text" name="status_description" class="form-control" value="{$selectedRepairs[2]->status_description}" placeholder="Zadejte poznámku">
+                                            <button type="submit" class="btn btn-primary ms-2">Uložit</button>
+                                        </div>
+                                        <noscript><button type="submit">Změnit stav</button></noscript>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="chat-section">
+                    <h4>Chat</h4>
+                    <div class="chat-messages">
+                        {foreach $chatMessages[2] as $msg}
+                            <div class="chat-message">
+                                <strong class="{if $msg->sender_id == $currentUserId}sender-me{else}sender-other{/if}">
+                                    {if $msg->sender_id == $currentUserId}Vy{else}Zákazník{/if}
+                                </strong>: {$msg->message}
+                                <small class="chat-time">{$msg->created_at|date:'H:i'}</small>
+                            </div>
+                        {/foreach}
+                    </div>
+                    <form method="post" action="{link SendMessage! 2}">
+                        <input type="hidden" name="repairId" value="{$selectedRepairs[2]->id}">
+                        <input type="text" name="message" class="form-control compact-input" placeholder="Napište zprávu...">
+                        <button type="submit" class="btn btn-primary btn-sm mt-1">Odeslat</button>
+                    </form>
+                </div>
+                <a href="{link CloseRepair! 2}" class="btn btn-sm btn-secondary mt-2">Zavřít</a>
+            </div>
+        {else}
+            <p>Vyberte opravu.</p>
+        {/if}
+    </div>
+
+    <!-- div4: User Info -->
+    <div class="div4">
+        <h3 class="compact-title">{$technician->name} {$technician->surname}</h3>
+        <p class="compact-text">ID: {$technician->id}</p>
+        <p class="compact-text">Role: opravar</p>
+        <p class="compact-text">Aktivní: {$activeRepairsCount}</p>
+        <p class="compact-text">Dokončeno dnes: {$completedToday}</p>
+    </div>
+
+    <!-- div5: Datagrid with Repairs -->
+    <div class="div5">
+        <h2>Moje opravy</h2>
+        <input type="text" id="repairSearch" class="form-control mb-2 compact-input" placeholder="Hledat...">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped repair-table compact-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Zařízení</th>
+                        <th>Problém</th>
+                        <th>Zákazník</th>
+                        <th>Stav</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach $repairs as $repair}
+                        <tr data-repair-id="{$repair->id}" data-url="{link SelectRepair! $repair->id}">
+                            <td>{$repair->id}</td>
+                            <td>{$repair->device}</td>
+                            <td>{$repair->issue}</td>
+                            <td>{$repair->name} {$repair->surname}</td>
+                            <td>{$repair->status}</td>
+                        </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <a href="{link :Front:Sign:out}" class="div6">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Odhlásit</span>
+    </a>
+
+    <!-- div7: Empty -->
+    <div class="div7"></div>
+
+    <!-- div8: Empty -->
+    <div class="div8"></div>
+</div>
+
+<script src="/js/TechDash.js"></script>
+{/block}

@@ -1,0 +1,306 @@
+/* Countdown Popup Styling */
+.countdown-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    display: none;
+}
+
+.countdown-content {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 350px; /* Slightly smaller for better readability */
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.countdown-content h4 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.countdown-content p {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.countdown-content .badge {
+    font-size: 14px;
+    padding: 6px 12px;
+}
+
+.countdown-content .btn {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+}
+
+/* Overlay Styling */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Slightly darker for better contrast */
+    z-index: 999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    .countdown-content {
+        max-width: 90%;
+        padding: 20px;
+    }
+
+    .countdown-content h4 {
+        font-size: 16px;
+    }
+
+    .countdown-content p {
+        font-size: 14px;
+    }
+
+    #chat-messages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        min-height: 200px;
+        max-height: 400px;
+        background-color: #f8f9fa; /* Light background for chat area */
+    }
+    
+    /* Base style for chat bubbles */
+    .chat-bubble {
+        max-width: 70%;
+        margin-bottom: 10px;
+        padding: 10px 15px;
+        border-radius: 10px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: relative;
+        word-wrap: break-word;
+    }
+    
+    /* Sent messages (right-aligned, blue) */
+    .chat-bubble.sent {
+        background-color: #007bff;
+        color: white;
+        margin-left: auto;
+        text-align: right;
+    }
+    
+    /* Received messages (left-aligned, gray) */
+    .chat-bubble.received {
+        background-color: #e9ecef;
+        color: #333;
+        margin-right: auto;
+        text-align: left;
+    }
+    
+    /* Optional: Add a small triangle for bubble effect */
+    .chat-bubble.sent:after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        right: 10px;
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid #007bff;
+    }
+    
+    .chat-bubble.received:after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 10px;
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid #e9ecef;
+    }
+
+}
+
+.list-group-item {
+    cursor: pointer;
+    padding: 15px;
+    margin-bottom: 5px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s;
+    border-radius: 5px;
+}
+
+.list-group-item:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.list-group-item.active {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Mobile responsive design */
+@media (max-width: 768px) {
+    .list-group-item {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .list-group-item a {
+        display: block;
+        padding: 10px;
+        color: black;
+    }
+
+    .list-group-item.active a {
+        color: white;
+    }
+}
+
+/* Repair Details - Modern Card Style */
+.repair-details {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.repair-details h3 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+.repair-details p {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.repair-details strong {
+    color: #007bff;
+}
+
+/* Styling for cards inside the right column */
+.card {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+/* Badges (status indicators) */
+.badge {
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 5px;
+}
+
+/* Progress Bar Styling */
+.progress {
+    height: 30px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    line-height: 30px; /* Center text inside the progress bar */
+    transition: width 0.5s ease-in-out;
+}
+
+/* Responsive adjustments for the right-side details */
+@media (max-width: 992px) {
+    .repair-details {
+        padding: 15px;
+    }
+
+    .card {
+        width: 100%;
+    }
+}
+
+/* Adjust columns for smaller screens */
+@media (max-width: 768px) {
+    .repair-details {
+        text-align: left;
+    }
+
+    .progress {
+        height: 25px;
+    }
+}
+
+/* Utility classes */
+.text-primary {
+    color: #007bff;
+}
+
+.text-secondary {
+    color: #6c757d;
+}
+
+.text-danger {
+    color: #dc3545;
+}
+
+.text-success {
+    color: #28a745;
+}
+
+.text-warning {
+    color: #ffc107;
+}
+
+/* Popup and Overlay Styling (added for countdown functionality) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+}
+
+.countdown-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.countdown-content {
+    text-align: center;
+}

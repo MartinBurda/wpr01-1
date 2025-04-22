@@ -1,0 +1,90 @@
+{block css}
+<link rel="stylesheet" href="/css/admin.css">
+{/block}
+{block content}
+<div class="container">
+    <h1 class="text-center mb-4">Výpis oprav</h1>
+
+    <input type="text" id="repairSearch" class="form-control mb-3" placeholder="Hledat...">
+
+    <div class="table-responsive">
+        <table class="table table-hover table-striped repair-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Zařízení</th>
+                    <th>Problém</th>
+                    <th>Jméno</th>
+                    <th>Příjmení</th>
+                    <th>Email</th>
+                    <th>Telefon</th>
+                    <th>Technik</th>
+                    <th>Vytvořeno</th>
+                </tr>
+            </thead>
+            <tbody>
+                {foreach $repairs as $repair}
+                    {if $user->getIdentity()->role === 'admin' || $repair->technician_id === $user->getId()} <!-- Show for admin OR assigned technician -->
+                        <tr data-url="{link AdminDashboard:detail, id => $repair->id}">
+                            <td>{$repair->id}</td>
+                            <td>{$repair->device}</td>
+                            <td>{$repair->issue}</td>
+                            <td>{$repair->name}</td>
+                            <td>{$repair->surname}</td>
+                            <td>{$repair->email}</td>
+                            <td>{$repair->phone}</td>
+                            <td>{$repair->technician_id ?: 'Nepřiřazeno'}</td>
+                            <td>{$repair->created_at|date:'d.m.Y H:i'}</td>
+                        </tr>
+                    {/if}
+                {/foreach}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="mt-4">
+    <h2>Akce</h2>
+    <ul>
+        <li><a href="{link 'Add:type'}">Přidat nový typ zařízení</a></li>
+        <li><a href="{link 'Add:model'}">Přidat nový model zařízení</a></li>
+        <li><a href="{link 'Add:manufacturer'}">Přidat nového výrobce</a></li>
+    </ul>
+</div>
+<script>
+    const repairSearchInput = document.getElementById('repairSearch');
+    const noResults = document.getElementById('noResults');
+    const rows = document.querySelectorAll('.repair-table tbody tr');
+
+    function applySearchAndClick() {
+        const filter = repairSearchInput.value.toLowerCase();
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const rowText = row.innerText.toLowerCase();
+
+            if (rowText.includes(filter)) {
+                row.style.display = '';
+                visibleCount++;
+
+                // Přidání funkce přesměrování na řádek
+                row.addEventListener('click', function () {
+                    const url = this.dataset.url;
+                    if (url) {
+                        window.location.href = url;
+                    }
+                });
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Zobrazení nebo skrytí zprávy "Žádné výsledky"
+        noResults.style.display = visibleCount === 0 ? '' : 'none';
+    }
+
+    // Naslouchání na vstup do vyhledávacího pole
+    repairSearchInput.addEventListener('input', applySearchAndClick);
+
+    // Spuštění na začátku
+    applySearchAndClick();
+</script>

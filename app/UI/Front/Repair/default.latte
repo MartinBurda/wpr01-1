@@ -1,0 +1,95 @@
+{block css}
+<link rel="stylesheet" href="/css/repairForm.css">
+{/block}
+{block content}
+<div class="container mt-5">
+    <h1>Submit a Repair Request</h1>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">Select Your Options</h5>
+            <div class="form-group">
+                {control form}
+            </div>
+            <!-- Price display div -->
+            <div id="price-display" class="text-center" style="display: none;">
+                <h5 class="mb-0">Estimated Repair Price: <span id="price-value"></span></h5>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+// Handle dependent select boxes
+document.querySelectorAll('select[data-depends]').forEach((childSelect) => {
+    let parentSelect = childSelect.form[childSelect.dataset.depends];
+    let url = childSelect.dataset.url;
+    let items = JSON.parse(childSelect.dataset.items || 'null');
+
+    parentSelect.addEventListener('change', () => {
+        if (items) {
+            updateSelectbox(childSelect, items[parentSelect.value]);
+        }
+        if (url) {
+            fetch(url.replace(encodeURIComponent('#'), encodeURIComponent(parentSelect.value)))
+                .then((response) => response.json())
+                .then((data) => updateSelectbox(childSelect, data));
+        }
+    });
+});
+
+// Function to update select box options
+function updateSelectbox(select, items) {
+    select.innerHTML = '<option value="">----</option>';
+    for (let id in items) {
+        let el = document.createElement('option');
+        el.setAttribute('value', id);
+        el.innerText = items[id];
+        select.appendChild(el);
+    }
+}
+
+// Handle price display
+document.addEventListener('DOMContentLoaded', () => {
+    let form = document.querySelector('form');
+    let typeSelect = form.elements['type'];
+    let manufacturerSelect = form.elements['manufacturer'];
+    let modelSelect = form.elements['model'];
+    let faultSelect = form.elements['fault'];
+    let priceDisplay = document.getElementById('price-display');
+    let priceValue = document.getElementById('price-value');
+
+function updatePrice() {
+    console.log("Selected Type:", typeSelect.value);
+    console.log("Selected Manufacturer:", manufacturerSelect.value);
+    console.log("Selected Model:", modelSelect.value);
+    console.log("Selected Fault:", faultSelect.value);
+
+    if (typeSelect.value && manufacturerSelect.value && modelSelect.value && faultSelect.value) {
+        let url = form.dataset.priceUrl + '?modelId=' + encodeURIComponent(modelSelect.value) + '&faultId=' + encodeURIComponent(faultSelect.value);
+
+        console.log("Fetching price from:", url);
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Received Price Data:", data);
+                priceValue.textContent = data.price;
+                priceDisplay.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error fetching price:', error);
+                priceDisplay.style.display = 'none';
+            });
+    } else {
+        priceDisplay.style.display = 'none';
+    }
+}
+
+
+    typeSelect.addEventListener('change', updatePrice);
+    manufacturerSelect.addEventListener('change', updatePrice);
+    modelSelect.addEventListener('change', updatePrice);
+    faultSelect.addEventListener('change', updatePrice);
+});
+</script>
+{/block}

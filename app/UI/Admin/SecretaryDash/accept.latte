@@ -1,0 +1,488 @@
+{block css}
+<link rel="stylesheet" href="/css/secretary.css">
+<style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .accept-repair.card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .accept-repair h4 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .repair-info {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    .repair-info p {
+        margin: 5px 0;
+        font-size: 1rem;
+        color: #555;
+    }
+
+    .repair-info p strong {
+        color: #333;
+    }
+
+    .form-grid {
+        display: grid;
+        gap: 15px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    }
+
+    .btn-block {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: #fff;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: #fff;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+
+    .logout.card {
+        text-align: center;
+        max-width: 200px;
+        margin: 0 auto;
+        padding: 10px;
+    }
+
+    .file-upload-label, .description-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .photo-preview-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .photo-preview-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .photo-preview {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .photo-preview:hover {
+        transform: scale(1.05);
+    }
+
+    .remove-btn {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .remove-btn:hover {
+        background-color: #c82333;
+    }
+
+    /* Modal styles for image preview */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        max-width: 90%;
+        max-height: 90%;
+        border-radius: 5px;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: #fff;
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .modal-close:hover {
+        color: #ccc;
+    }
+
+    .modal-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(255, 255, 255, 0.8);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .modal-nav:hover {
+        background-color: rgba(255, 255, 255, 1);
+    }
+
+    .modal-prev {
+        left: 20px;
+    }
+
+    .modal-next {
+        right: 20px;
+    }
+
+    /* Edit modal styles */
+    .edit-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .edit-modal-content {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .edit-modal-content h4 {
+        margin-bottom: 20px;
+    }
+
+    .edit-modal-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #333;
+    }
+
+    .edit-modal-close:hover {
+        color: #000;
+    }
+</style>
+{/block}
+
+{block content}
+<div class="dashboard-container">
+    <div class="accept-repair card">
+        <h4>{if $repair->status === 'Pending'}Přijmout{else}Zobrazit{/if} opravu s kódem: {$repair->repair_code}</h4>
+        
+        <!-- Repair Information Section -->
+        <div class="repair-info">
+            <p><strong>Zařízení:</strong> {$repair->device}</p>
+            <p><strong>Problém:</strong> {$repair->issue}</p>
+            <p><strong>Zákazník:</strong> {$repair->name} {$repair->surname}</p>
+            <p><strong>Email:</strong> {$repair->email}</p>
+            <p><strong>Telefon:</strong> {$repair->phone}</p>
+            <p><strong>Status:</strong> <span class="badge bg-{$repair->status|lower}">{$repair->status}</span></p>
+        </div>
+
+        <!-- Edit Button -->
+        <button id="edit-repair-btn" class="btn btn-primary btn-block" style="margin-bottom: 20px;">Upravit informace o opravě</button>
+
+        <!-- Form for Accepting Repair (only shown for Pending repairs) -->
+        {if $repair->status === 'Pending'}
+        {form acceptRepairForm}
+            {input repair_code value => $repair->repair_code, type => 'hidden'}
+            
+            <div class="form-grid">
+                <!-- Photos Upload -->
+                <div>
+                    <label for="photos" class="file-upload-label">Fotky zařízení (max 10, každý max 5 MB)</label>
+                    {input photos class => 'form-control', multiple => true, id => 'photo-upload'}
+                    <div id="photo-preview" class="photo-preview-container"></div>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="description" class="description-label">Popis (volitelné)</label>
+                    {input description class => 'form-control', placeholder => 'Zadejte popis stavu zařízení...'}
+                </div>
+
+                <!-- Submit Button -->
+                {input submit class => 'btn btn-success btn-block', value => 'Přijmout opravu'}
+            </div>
+        {/form}
+        {/if}
+
+        <!-- Existing Photos (for Accepted repairs) -->
+        {if $repair->status === 'Accepted'}
+        <div class="photo-grid">
+            <h5>Fotografie:</h5>
+            {var $photos = $repairFacade->getPhotosByRepairId($repair->id)}
+            {if $photos}
+                {foreach $photos as $photo}
+                    <img src="{$photo->path}" class="photo-item" alt="Fotografie opravy">
+                {/foreach}
+            {else}
+                <p>Žádné fotografie nebyly nahrány.</p>
+            {/if}
+        </div>
+        {/if}
+    </div>
+
+    <!-- Logout Button -->
+    <div class="logout card">
+        <a href="{link :Front:Sign:out}" class="btn btn-danger btn-block">Odhlásit se</a>
+    </div>
+</div>
+
+<!-- Modal for image preview -->
+<div id="image-modal" class="modal">
+    <span id="modal-close" class="modal-close">×</span>
+    <button id="modal-prev" class="modal-nav modal-prev">◄</button>
+    <img id="modal-image" class="modal-content">
+    <button id="modal-next" class="modal-nav modal-next">►</button>
+</div>
+
+<!-- Modal for editing repair -->
+<div id="edit-repair-modal" class="edit-modal">
+    <div class="edit-modal-content">
+        <span id="edit-modal-close" class="edit-modal-close">×</span>
+        <h4>Upravit opravu s kódem: {$repair->repair_code}</h4>
+        {form editRepairForm}
+            {input id value => $repair->id}
+            {input repair_code value => $repair->repair_code, type => 'hidden'}
+            <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                {input device class => 'form-control mb-2', value => $repair->device}
+                {input issue class => 'form-control mb-2', value => $repair->issue}
+                {input name class => 'form-control mb-2', value => $repair->name}
+                {input surname class => 'form-control mb-2', value => $repair->surname}
+                {input email class => 'form-control mb-2', value => $repair->email}
+                {input phone class => 'form-control mb-2', value => $repair->phone}
+            </div>
+            {input submit class => 'btn btn-primary btn-block', value => 'Uložit změny'}
+        {/form}
+    </div>
+</div>
+
+<script>
+let images = [];
+let currentImageIndex = 0;
+
+const photoUpload = document.getElementById('photo-upload');
+const previewContainer = document.getElementById('photo-preview');
+const imageModal = document.getElementById('image-modal');
+const modalImage = document.getElementById('modal-image');
+const modalClose = document.getElementById('modal-close');
+const modalPrev = document.getElementById('modal-prev');
+const modalNext = document.getElementById('modal-next');
+const editRepairBtn = document.getElementById('edit-repair-btn');
+const editModal = document.getElementById('edit-repair-modal');
+const editModalClose = document.getElementById('edit-modal-close');
+
+function updateFileInput() {
+    const dataTransfer = new DataTransfer();
+    images.forEach(image => dataTransfer.items.add(image.file));
+    photoUpload.files = dataTransfer.files;
+}
+
+function renderPreviews() {
+    previewContainer.innerHTML = '';
+    images.forEach((image, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('photo-preview-wrapper');
+
+        const img = document.createElement('img');
+        img.src = image.dataUrl;
+        img.classList.add('photo-preview');
+        img.addEventListener('click', () => {
+            currentImageIndex = index;
+            imageModal.style.display = 'flex';
+            modalImage.src = image.dataUrl;
+        });
+
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = '×';
+        removeBtn.classList.add('remove-btn');
+        removeBtn.addEventListener('click', () => {
+            images.splice(index, 1);
+            renderPreviews();
+            updateFileInput();
+        });
+
+        wrapper.appendChild(img);
+        wrapper.appendChild(removeBtn);
+        previewContainer.appendChild(wrapper);
+    });
+}
+
+if (photoUpload) {
+    photoUpload.addEventListener('change', function(event) {
+        images = [];
+        const files = event.target.files;
+
+        if (files.length > 10) {
+            alert('Můžete nahrát maximálně 10 fotografií.');
+            event.target.value = '';
+            return;
+        }
+
+        for (const file of files) {
+            if (!file.type.startsWith('image/')) {
+                alert('Prosím nahrajte pouze obrázky.');
+                previewContainer.innerHTML = '';
+                event.target.value = '';
+                images = [];
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Soubor ' + file.name + ' je příliš velký (max 5 MB).');
+                event.target.value = '';
+                images = [];
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                images.push({ file: file, dataUrl: e.target.result });
+                if (images.length === files.length) {
+                    renderPreviews();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+modalPrev.addEventListener('click', () => {
+    currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+    modalImage.src = images[currentImageIndex].dataUrl;
+});
+
+modalNext.addEventListener('click', () => {
+    currentImageIndex = (currentImageIndex + 1) % images.length;
+    modalImage.src = images[currentImageIndex].dataUrl;
+});
+
+modalClose.addEventListener('click', () => {
+    imageModal.style.display = 'none';
+});
+
+imageModal.addEventListener('click', (event) => {
+    if (event.target === imageModal) {
+        imageModal.style.display = 'none';
+    }
+});
+
+editRepairBtn.addEventListener('click', () => {
+    editModal.style.display = 'flex';
+});
+
+editModalClose.addEventListener('click', () => {
+    editModal.style.display = 'none';
+});
+
+editModal.addEventListener('click', (event) => {
+    if (event.target === editModal) {
+        editModal.style.display = 'none';
+    }
+});
+</script>
+{/block}

@@ -1,0 +1,19 @@
+database:
+	dsn: 'mysql:host=127.0.0.1;dbname=dbname'
+	user: usr
+	password: pass
+
+mail:
+    smtp: true
+    host: smtp.seznam.cz
+    port: 465
+    username: email@emal.com
+    password: passwd
+    encryption: ssl
+
+extensions:
+	recaptcha: Contributte\ReCaptcha\DI\ReCaptchaExtension
+
+recaptcha:
+	secretKey: key
+	siteKey: key

@@ -1,0 +1,121 @@
+{block css}
+<link rel="stylesheet" href="/css/home.css">
+{/block}
+{block content}
+<div class="content">
+    <div class="row align-items-center bg-light py-5">
+        <div class="col-md-6 text-center">
+            <h1 class="text-primary">Vítejte v našem Servisu!</h1>
+            <p class="text-secondary">
+                Specializujeme se na opravy chytrých telefonů, tabletů a počítačů všech značek. Nabízíme rychlé a spolehlivé služby včetně výměny displejů, baterií a opravy hardwarových problémů.
+            </p>
+            <div class="btn-container">
+                <!-- Role-based buttons -->
+                {if !$user->isLoggedIn()}
+                    <!-- Button displayed when user is not logged in -->
+                    <a n:href="Repair:default" class="btn btn-primary btn-lg mt-3">
+                        Potřebuji Servis
+                    </a>
+   
+                {elseif $user->isInRole('admin')}
+                    <!-- Button displayed when user is an admin -->
+                    <a n:href=":Admin:AdminDashboard:default" class="btn btn-primary btn-lg mt-3">
+                        Vstoupit do informačního systému
+                    </a>
+                {elseif $user->isInRole('repair')}
+                    <!-- Button displayed when user is a technician -->
+                    <a n:href=":Admin:TechnicianDashboard:default" class="btn btn-primary btn-lg mt-3">
+                        Opravar
+                    </a>
+                {elseif $user->isInRole('secretary')}
+                        <a n:href=":Admin:SecretaryDash:default" class="btn btn-primary btn-lg mt-3">
+                        Sekretářka
+                    </a>
+                {else}
+                    <!-- Button displayed for regular users (logged in but neither admin nor technician) -->
+                    <a n:href="Repair:default" class="btn btn-primary btn-lg mt-3">
+                        Potřebuji Servis
+                    </a>
+                {/if}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <img src="uploads/default/img.jpg" 
+                 alt="Technik opravující smartphone" 
+                 class="img-fluid rounded shadow" 
+                 style="max-width: 100%; height: auto;">
+        </div>
+    </div>
+</div>
+
+
+    <div class="row text-center py-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <i class="fas fa-mobile-alt fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Výměna displejů</h5>
+                    <p class="card-text">Oprava a výměna rozbitých displejů.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <i class="fas fa-battery-half fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Výměna baterií</h5>
+                    <p class="card-text">Instalace nových baterií pro delší životnost.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <i class="fas fa-tools fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Oprava hardwaru</h5>
+                    <p class="card-text">Opravy hardwarových problémů.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div class="additional-content py-5 bg-light text-center">
+        <div class="container">
+            <h2 class="text-primary">Proč si vybrat náš servis?</h2>
+            <p class="text-secondary mb-4">
+                Kvalitní opravy, rychlý servis a přátelský přístup. Naším cílem je Vaše spokojenost.
+            </p>
+            <div class="row justify-content-center">
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <i class="fas fa-shipping-fast fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Rychlé opravy</h5>
+                            <p class="card-text">Vaše zařízení opravíme co nejrychleji.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <i class="fas fa-check-circle fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Záruka kvality</h5>
+                            <p class="card-text">Používáme pouze originální nebo kvalitní náhradní díly.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Profesionální tým</h5>
+                            <p class="card-text">Naši technici mají dlouholeté zkušenosti.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a n:href="Home:about" class="btn btn-primary btn-lg mt-4">Zjistit více</a>
+        </div>
+    </div>
+{/block}

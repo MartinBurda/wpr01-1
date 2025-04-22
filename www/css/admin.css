@@ -1,0 +1,40 @@
+/* Stávající styly + responsivita */
+.repair-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.repair-table th, .repair-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.repair-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.repair-table tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.repair-table tr:hover {
+    background-color: #f0f8ff;
+}
+
+.repair-table tr.active {
+    background-color: #007bff;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .repair-table th:nth-child(4),
+    .repair-table td:nth-child(4),
+    .repair-table th:nth-child(5),
+    .repair-table td:nth-child(5) {
+        display: none;
+    }
+}

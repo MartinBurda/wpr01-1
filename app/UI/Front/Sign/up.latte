@@ -1,0 +1,149 @@
+{block content}
+
+<style>
+    /* Definice animace fadeIn */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Styl pro animaci formuláře */
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    /* Styl pro formulářní prvky */
+    input.form-control, select.form-control {
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+    .container-form {
+        max-width: 800px;
+        width: 100%;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+    }
+</style>
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="container-form fade-in">
+        <h1 class="text-center mb-4">Registrovat se</h1>
+
+        {form signUpForm}
+        
+        <div class="row">
+            <!-- Levý sloupec -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input n:name="username" class="form-control" placeholder="Přezdívka" required>
+                </div>
+
+                <div class="form-group">
+                    <input n:name="name" class="form-control" placeholder="Jméno" required>
+                </div>
+
+                <div class="form-group">
+                    <input n:name="surname" class="form-control" placeholder="Příjmení" required>
+                </div>
+
+                <div class="form-group">
+                    <input n:name="phone" class="form-control" placeholder="Telefonní číslo" required>
+                </div>
+
+                <div class="form-group">
+                    <input n:name="email" class="form-control" placeholder="E-mail" type="email" required>
+                </div>
+            </div>
+
+            <!-- Pravý sloupec -->
+            <div class="col-md-6">
+                <!-- New Date Picker for Birth Date -->
+                <div class="form-group">
+                    <label for="birth_date">Datum narození:</label>
+                    <div class="d-flex">
+                        <select n:name="birth_day" class="form-control mr-2"></select>
+                        <select n:name="birth_month" class="form-control mr-2"></select>
+                        <select n:name="birth_year" class="form-control"></select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input n:name="address" class="form-control" placeholder="Adresa" required>
+                </div>
+
+                <div class="form-group">
+                    <input n:name="password" class="form-control" placeholder="Heslo" type="password" required>
+                </div>
+
+                <div class="form-group">
+                    <input n:name="passwordConfirm" class="form-control" placeholder="Heslo znovu" type="password" required>
+                    <small class="form-text text-muted">Alespoň 7 znaků</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary btn-block">Registrovat se</button>
+        </div>
+
+        {/form}
+
+        <p class="text-center mt-3">
+            <a n:href="in" class="text-primary">Mám účet</a>
+        </p>
+    </div>
+</div>
+
+<script>
+    // Populate date pickers
+    document.addEventListener("DOMContentLoaded", function() {
+        const daySelect = document.querySelector("select[n\\:name='birth_day']");
+        const monthSelect = document.querySelector("select[n\\:name='birth_month']");
+        const yearSelect = document.querySelector("select[n\\:name='birth_year']");
+
+        // Populate days (1-31)
+        for (let i = 1; i <= 31; i++) {
+            const option = document.createElement("option");
+            option.value = i;
+            option.textContent = i;
+            daySelect.appendChild(option);
+        }
+
+        // Populate months
+        const months = [
+            "Leden", "Únor", "Březen", "Duben", "Květen", "Červen",
+            "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"
+        ];
+        months.forEach((month, index) => {
+            const option = document.createElement("option");
+            option.value = index + 1;
+            option.textContent = month;
+            monthSelect.appendChild(option);
+        });
+
+        // Populate years (from 100 years ago to today)
+        const currentYear = new Date().getFullYear();
+        for (let i = currentYear - 100; i <= currentYear; i++) {
+            const option = document.createElement("option");
+            option.value = i;
+            option.textContent = i;
+            yearSelect.appendChild(option);
+        }
+
+        // Set default values (optional)
+        daySelect.value = 1;
+        monthSelect.value = 1;
+        yearSelect.value = currentYear - 20;
+    });
+</script>
+
+{/block}

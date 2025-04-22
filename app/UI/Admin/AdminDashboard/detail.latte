@@ -1,0 +1,139 @@
+<style>
+    /* Styl tabulky pro detail opravy */
+    table.table-bordered {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    table.table-bordered td, table.table-bordered th {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    table.table-bordered th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+</style>
+{block content}
+<div class="container">
+    <h1 class="text-center mb-4">Oprava č. {$repair->id}</h1>
+
+    <!-- Informace o konkrétní opravě -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Informace o opravě</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>ID:</th>
+                        <td>{$repair->id}</td>
+                    </tr>
+                    <tr>
+                        <th>Zařízení:</th>
+                        <td>{$repair->device}</td>
+                    </tr>
+                    <tr>
+                        <th>Popis problému:</th>
+                        <td>{$repair->issue}</td>
+                    </tr>
+                    <tr>
+                        <th>Jméno zákazníka:</th>
+                        <td>{$repair->name} {$repair->surname}</td>
+                    </tr>
+                    <tr>
+                        <th>E-mail:</th>
+                        <td>{$repair->email}</td>
+                    </tr>
+                    <tr>
+                        <th>Telefon:</th>
+                        <td>{$repair->phone}</td>
+                    </tr>
+                    <tr>
+                        <th>Technik:</th>
+                        <td>
+                            {if $technician}
+                                {$technician->name} {$technician->surname}
+                            {else}
+                                Nepřiřazeno
+                            {/if}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Vytvořeno:</th>
+                        <td>{$repair->created_at|date:'d.m.Y H:i'}</td>
+                    </tr>
+                    <tr>
+                        <th>Aktuální stav:</th>
+                        <td>
+                            <form method="post" action="{link updateStatus!}">
+                                <input type="hidden" name="id" value="{$repair->id}">
+                                
+                                <div class="d-flex">
+                                    <!-- Status Dropdown -->
+                                    <select name="status" class="form-select me-2" onchange="this.form.submit()">
+                                        {var $statuses = ['Pending', 'Approved', 'In Progress', 'Waiting for Parts', 'On Hold', 'Completed', 'Failed', 'Cancelled', 'Ready for Pickup', 'Delivered']}
+                                        {foreach $statuses as $status}
+                                            <option value="{$status}" {if $repair->status == $status}selected{/if}>
+                                                {$status}
+                                            </option>
+                                        {/foreach}
+                                    </select>
+
+                                    <!-- Status Description Input -->
+                                    <input type="text" name="status_description" class="form-control" value="{$repair->status_description}" placeholder="Zadejte poznámku">
+                                    <button type="submit" class="btn btn-primary ms-2">Uložit</button>
+                                </div>
+
+                                <noscript><button type="submit">Změnit stav</button></noscript>
+                            </form>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div id="chat" style="position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; background: white; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); overflow: hidden; display: flex; flex-direction: column;">
+    <div style="background: #007bff; color: white; padding: 10px; text-align: center; font-weight: bold;">
+        Chat se zákazníkem
+    </div>
+    
+    <div id="chat-messages" style="flex: 1; padding: 10px; overflow-y: auto; height: 300px;">
+        {foreach $chatMessages as $msg}
+            <div>
+                <strong style="color: {if $msg->sender_id == $user->id} #007bff {else} #28a745 {/if}">
+                    {if $msg->sender_id == $user->id} Vy {else} Zákazník {/if}
+                </strong>: {$msg->message}
+                <small style="float: right; color: gray;">{$msg->created_at|date:"H:i"}</small>
+            </div>
+        {/foreach}
+    </div>
+
+    <div style="padding: 10px; border-top: 1px solid #ddd;">
+        <input type="hidden" name="repairId" value="{$repair->id}">
+        <input type="text" id="chat-input" class="form-control" placeholder="Napište zprávu...">
+        <button id="chat-send" class="btn btn-primary btn-sm mt-2" style="width: 100%;">Odeslat</button>
+    </div>
+</div>
+
+<script>
+    var CURRENT_USER_ID = {$user->id};
+    var CHAT_GET_MESSAGES_URL = {link AdminDashboard:getMessages, repairId => $repair->id};
+    var CHAT_SEND_MESSAGE_URL = {link AdminDashboard:sendMessage};
+</script>
+<script src="/js/chat.js"></script>
+
+    </div>
+
+    <!-- Zpět na seznam oprav -->
+    <div class="mt-3 text-center">
+        <a href="{link AdminDashboard:default}" class="btn btn-secondary">Zpět</a>
+    </div>
+</div>
+{/block}
+
+

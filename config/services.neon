@@ -1,13 +1,15 @@
+# Service registrations. See https://doc.nette.org/dependency-injection/services
+
 services:
-    - App\Router\RouterFactory::createRouter
-    - App\Model\PostFacade
-    - App\Forms\FormFactory
-    - App\Forms\SignInFormFactory
-    - App\Forms\SignUpFormFactory
+	- App\Core\RouterFactory::createRouter
+	- App\MailSender\MailSender
 
-    # Hlavní autentizátor pro klasické přihlášení
-    - App\Model\UserFacade
 
-    security.user:
-        setup:
-            - setAuthenticator(@App\Model\UserFacade) # Nastavení výchozího autentizátoru
+
+
+
+search:
+	-	in: %appDir%
+		classes:
+			- *Factory
+			- *Facade

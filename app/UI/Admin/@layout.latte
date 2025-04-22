@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MobilníMaestro</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{block css}
+{/block}
+</head>
+
+<body>
+    <!-- Hlavička s navigací -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #003f7d;"> <!-- Using a deep navy blue -->
+    <div class="container">
+        <a class="navbar-brand" n:href=":Front:Home:default">MobilníMaestro</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" n:href=":Front:Home:default">Domů</a></li>
+                <li class="nav-item"><a class="nav-link" n:href=":Front:Home:about">O nás</a></li>
+                <li class="nav-item"><a class="nav-link" n:href=":Front:Home:contact">Kontakt</a></li>
+            </ul>
+        </div>
+
+            <!-- Dropdown pro přihlášené uživatele -->
+            <div n:if="$user->isLoggedIn()">
+                <div class="dropdown">
+                    <a class="btn btn-secondary dropdown-toggle" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{$basePath}/{$user->identity->image}" height= 30px>{$user->identity->username}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item text-secondary" n:href=":Front:Dashboard:default">Mé opravy</a></li>
+                        <li><a class="dropdown-item text-secondary" n:href=":Admin:User:edit, $user->getIdentity()->id">Informace o účtu</a></li>
+                        <li><a class="dropdown-item text-danger" n:href=":Front:Sign:out">Odhlásit se</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Zobrazit tlačítko pro přihlášení, když uživatel není přihlášen -->
+            <div n:if="!$user->isLoggedIn()">
+                <a n:href=":Front:Sign:in" class="btn btn-primary">Přihlásit se</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hlavní obsah stránky -->
+    <div class="container mt-5">
+        {if $flashes}
+      {foreach $flashes as $flash}
+        <div class="alert alert-{$flash->type} alert-dismissible fade show" role="alert">
+          {$flash->message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zavřít"></button>
+        </div>
+      {/foreach}
+    {/if}
+        {include content}
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

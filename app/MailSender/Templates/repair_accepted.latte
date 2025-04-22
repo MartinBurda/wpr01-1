@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Vaše oprava byla přijata</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <h1 style="color: #005555;">Vaše oprava byla přijata</h1>
+    <p>Vážený/á {$name} {$surname},</p>
+    <p>Děkujeme za svěření Vašeho zařízení do našich rukou. Vaše oprava byla přijata a zpracováváme ji.</p>
+    
+    <h2>Detaily opravy</h2>
+    <ul>
+        <li><strong>Zařízení:</strong> {$device}</li>
+        <li><strong>Problém:</strong> {$issue}</li>
+        <li><strong>Kód opravy:</strong> {$repair_code}</li>
+        <li><strong>Přijato:</strong> {$accepted_at}</li>
+        <li><strong>Email:</strong> {$email}</li>
+        <li><strong>Telefon:</strong> {$phone}</li>
+    </ul>
+    
+    <p>Budeme Vás informovat o dalším postupu. Pokud máte jakékoli dotazy, kontaktujte nás na <a href="mailto:podpora@vasdomena.cz">podpora@vasdomena.cz</a> nebo na telefonním čísle +420 123 456 789.</p>
+    
+    <p>S přátelským pozdravem,<br>Váš tým Opravy Zařízení</p>
+</body>
+</html>

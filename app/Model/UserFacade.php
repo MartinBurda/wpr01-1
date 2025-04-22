@@ -10,6 +10,8 @@ use Nette\Security\Authenticator;
 use Nette\Security\SimpleIdentity;
 use Nette\Security\AuthenticationException;
 use Nette\Database\UniqueConstraintViolationException;
+use App\Model\DuplicateNameException;
+
 
 /**
  * Manages user-related operations such as authentication, adding new users, and modifying user details.
@@ -28,8 +30,12 @@ final class UserFacade implements Authenticator
         ColumnUsername = 'username',
         ColumnPasswordHash = 'password',
         ColumnEmail = 'email',
+        ColumnPhone = 'phone',
+        ColumnBirthDate = 'birth_date',  
+        ColumnAddress = 'address',   
         ColumnRole = 'role',
         ColumnImage = 'image';
+
 
     // Dependency injection of database explorer and password utilities
     public function __construct(
@@ -71,7 +77,7 @@ final class UserFacade implements Authenticator
      * Add a new user to the database.
      * Throws a DuplicateNameException if the username is already taken.
      */
-    public function add(string $username, string $name, string $surname, string $email, string $password,string $role,string $image): void
+    public function add(string $username, string $name, string $surname, string $email, string $phone, string $password, string $role, string $image, string $birth_date,string $address ): void
     {
         // Validate email format
         Nette\Utils\Validators::assert($email, 'email');
@@ -83,13 +89,23 @@ final class UserFacade implements Authenticator
                 self::ColumnSurname => $surname,
                 self::ColumnPasswordHash => $this->passwords->hash($password),
                 self::ColumnEmail => $email,
-                self::ColumnImage => $image, // Cesta k obrázku (výchozí nebo nahraný)
-                self::ColumnRole => 'user', // Default role for new users
+                self::ColumnPhone => $phone,
+                self::ColumnImage => $image,
+                self::ColumnRole => $role,
+                self::ColumnBirthDate => $birth_date,
+                self::ColumnAddress => $address,
             ]);
-        } catch (UniqueConstraintViolationException $e) {
-            throw new DuplicateNameException('The username is already taken.');
+        } catch (\Nette\Database\UniqueConstraintViolationException $e) {
+            // Throw a custom exception
+            throw new DuplicateNameException('The username or email is already taken.');
+        } catch (\Exception $e) {
+            // General exception catch for debugging purposes
+            throw new \RuntimeException('Database error: ' . $e->getMessage());
         }
+        
     }
+    
+    
 
     /**
      * Get a user by their ID.
@@ -230,5 +246,22 @@ final class UserFacade implements Authenticator
                 "%$query%", "%$query%", "%$query%", "%$query%"
             );
     }
+
+    public function getTechnicianWithLeastRepairs(): ?int
+    {
+        return $this->database->fetchField("
+            SELECT users.id 
+            FROM users 
+            LEFT JOIN repairs ON users.id = repairs.technician_id 
+            WHERE users.role = 'repair'
+            GROUP BY users.id 
+            ORDER BY COUNT(repairs.technician_id) ASC 
+            LIMIT 1
+        ");
+    }
     
+
+
+
+
 }

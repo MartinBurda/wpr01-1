@@ -1,0 +1,14 @@
+{block content}
+<h1>Přidat nový typ zařízení</h1>
+
+{control addTypeForm}
+
+<ul>
+    {foreach $types as $id => $name}
+        <li>{$name}</li>
+    {/foreach}
+</ul>
+<ul>
+        <li><a href="{link 'AdminDashboard:default'}">Zpět</a></li>
+    </ul>
+{/block}

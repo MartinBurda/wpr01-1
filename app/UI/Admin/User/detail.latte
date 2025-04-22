@@ -1,0 +1,56 @@
+{block content}
+<div class="container">
+    <h1 class="text-center mb-4">Detail opravy</h1>
+
+    <!-- Informace o konkrétní opravě -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Informace o opravě</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>ID:</th>
+                        <td>{$repair->id}</td>
+                    </tr>
+                    <tr>
+                        <th>Zařízení:</th>
+                        <td>{$repair->device}</td>
+                    </tr>
+                    <tr>
+                        <th>Popis problému:</th>
+                        <td>{$repair->issue}</td>
+                    </tr>
+                    <tr>
+                        <th>Jméno zákazníka:</th>
+                        <td>{$repair->name} {$repair->surname}</td>
+                    </tr>
+                    <tr>
+                        <th>E-mail:</th>
+                        <td>{$repair->email}</td>
+                    </tr>
+                    <tr>
+                        <th>Telefon:</th>
+                        <td>{$repair->phone}</td>
+                    </tr>
+                    <tr>
+                        <th>Technik:</th>
+                        <td>{$repair->users->name}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Vytvořeno:</th>
+                        <td>{$repair->created_at|date:'d.m.Y H:i'}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Zpět na seznam oprav -->
+    <div class="mt-3 text-center">
+        <a href="{link AdminDashboard:default}" class="btn btn-secondary">Zpět</a>
+    </div>
+</div>
+{/block}

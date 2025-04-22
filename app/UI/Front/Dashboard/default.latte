@@ -1,0 +1,197 @@
+{block css}
+<link rel="stylesheet" href="/css/usrdash.css">
+{/block}
+
+{block content}
+<div style="display: flex; height: 100vh;">
+    <!-- Levý sloupec: Seznam oprav (unchanged) -->
+    <div style="width: 40%; padding: 20px; border-right: 1px solid #ccc; overflow-y: scroll;">
+        <h3>Seznam oprav</h3>
+        <ul class="list-group">
+            {foreach $repairs as $repair}
+                {if $user->getIdentity()->role === 'admin' || $repair->customer_id === $user->getId()}
+                    <a href="{link 'Dashboard:default', repairId => $repair->id}" style="text-decoration: none;">
+                        <li class="list-group-item {if $selectedRepair && $repair->id === $selectedRepair->id}active{/if}">
+                            <strong>Zařízení:</strong> {$repair->device}<br>
+                            <small><strong>Problém:</strong> {$repair->issue|truncate:40}</small><br>
+                            <small><strong>Status:</strong> <span>{$repair->status}</span></small>
+                        </li>
+                    </a>
+                {/if}
+            {/foreach}
+        </ul>
+    </div>
+
+    <!-- Countdown Popup for Pending Repairs -->
+    {if $selectedRepair && $selectedRepair->status === 'Pending'}
+    <div id="countdown-popup" class="countdown-modal" style="display: block;">
+        <div class="countdown-content">
+            <h4 class="text-warning">Čeká se na předání zařízení</h4>
+            <p>Prosím, předejte zařízení do opravy co nejdříve.</p>
+            <p><strong>Podací kód:</strong> <span class="badge bg-primary">{$selectedRepair->repair_code}</span></p>
+            <p><strong>Zbývající čas:</strong> 
+                <span id="countdown-timer" class="text-danger">
+                    {if $deadlinePassed || ($days === 0 && $hours === 0 && $minutes === 0)}
+                        Vypršel termín!
+                    {else}
+                        {$days} {if $days === 1}dni{else}dní{/if}, 
+                        {$hours} {if $hours === 1}hodiny{elseif $hours >= 2 && $hours <= 4}hodiny{else}hodin{/if}, 
+                        {$minutes} {if $minutes === 1}minuty{elseif $minutes >= 2 && $minutes <= 4}minuty{else}minut{/if}
+                    {/if}
+                </span>
+            </p>
+            <button id="close-popup" class="btn btn-secondary btn-sm mt-3">Zavřít</button>
+        </div>
+    </div>
+    <div id="popup-overlay" class="modal-overlay" style="display: block;"></div>
+    {/if}
+
+    <!-- Pravý sloupec: Detail opravy -->
+    <div style="width: 60%; padding: 20px; overflow-y: auto;">
+        {if $selectedRepair}
+            <!-- Minimized Countdown -->
+            {if $selectedRepair->status === 'Pending'}
+                <div id="minimized-countdown" class="card" style="display: none; margin-bottom: 20px; padding: 10px; background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 5px;">
+                    <h5 class="text-warning" style="margin-bottom: 10px; font-size: 16px;">Čeká se na předání</h5>
+                    <p style="font-size: 14px; margin-bottom: 5px;"><strong>Podací kód:</strong> <span class="badge bg-primary">{$selectedRepair->repair_code}</span></p>
+                    <p style="font-size: 14px; margin-bottom: 0;"><strong>Zbývající čas:</strong> 
+                        <span id="minimized-timer" class="text-danger">
+                            {if $deadlinePassed || ($days === 0 && $hours === 0 && $minutes === 0)}
+                                Vypršel termín!
+                            {else}
+                                {$days} {if $days === 1}dni{else}dní{/if}, 
+                                {$hours} {if $hours === 1}hodiny{elseif $hours >= 2 && $hours <= 4}hodiny{else}hodin{/if}, 
+                                {$minutes} {if $minutes === 1}minuty{elseif $minutes >= 2 && $minutes <= 4}minuty{else}minut{/if}
+                            {/if}
+                        </span>
+                    </p>
+                </div>
+            {/if}
+
+            <!-- Rest of the repair details -->
+            <div class="repair-details">
+                <h3 class="text-primary">Oprava č. {$selectedRepair->id}</h3>
+                <h4>Průběh opravy</h4>
+                <div class="progress" style="height: 30px; margin-bottom: 20px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated 
+                         {if $selectedRepair->status == 'Completed' || $selectedRepair->status == 'Delivered'}bg-success
+                         {elseif $selectedRepair->status == 'Failed' || $selectedRepair->status == 'Cancelled'}bg-danger
+                         {elseif $selectedRepair->status == 'On Hold' || $selectedRepair->status == 'Waiting for Parts'}bg-warning
+                         {else}bg-info{/if}" 
+                         role="progressbar" 
+                         style="width: {$progressPercentage}%;"
+                         aria-valuenow="{$progressPercentage}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100">
+                         {$selectedRepair->status} ({$progressPercentage}%)
+                    </div>
+                </div>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <div class="card" style="width: 48%;">
+                        <h5 class="text-secondary">Informace o zařízení</h5>
+                        <p><strong>Zařízení:</strong> {$selectedRepair->device}</p>
+                        <p><strong>Problém:</strong> {$selectedRepair->issue}</p>
+                        <p><strong>Vytvořeno:</strong> {$selectedRepair->created_at}</p>
+                        <p><strong>Status:</strong> <span class="badge bg-primary">{$selectedRepair->status}</span></p>
+                    </div>
+                    <div class="card" style="width: 48%;">
+                        <h5 class="text-secondary">Zákazník</h5>
+                        <p><strong>Jméno:</strong> {$selectedRepair->name} {$selectedRepair->surname}</p>
+                        <p><strong>E-mail:</strong> <a href="mailto:{$selectedRepair->email}" class="text-primary">{$selectedRepair->email}</a></p>
+                        <p><strong>Telefon:</strong> <a href="tel:{$selectedRepair->phone}" class="text-primary">{$selectedRepair->phone}</a></p>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <p><strong>ID technika:</strong> <span class="badge bg-dark">{$selectedRepair->technician_id}</span></p>
+                    <p><strong>Problém:</strong> <span class="badge bg-dark">{$selectedRepair->issue}</span></p>
+                </div>
+            </div>
+        {else}
+            <p class="text-center">Vyberte opravu pro zobrazení detailu.</p>
+        {/if}
+    </div>
+
+    <!-- Chat Window (unchanged) -->
+    {if $selectedRepair}
+    <div id="chat-window" style="position: fixed; bottom: 20px; right: 20px; width: 300px; background: white; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); display: none; flex-direction: column; z-index: 1000;">
+        <div id="chat-header" style="background: #007bff; color: white; padding: 10px; text-align: center; font-weight: bold; cursor: pointer;">
+            Chat s opravářem
+            <button id="chat-toggle" style="float: right; background: none; border: none; color: white; font-size: 16px;">▼</button>
+        </div>
+        <div id="chat-content" style="display: block;">
+            <div id="chat-messages" style="height: 250px; padding: 10px; overflow-y: auto; background-color: #f8f9fa;"></div>
+            <div style="padding: 10px; border-top: 1px solid #ddd;">
+                <input type="hidden" name="repairId" value="{$selectedRepair->id}">
+                <input type="text" id="chat-input" class="form-control" placeholder="Napište zprávu...">
+                <button id="chat-send" class="btn btn-primary btn-sm mt-2" style="width: 100%;">Odeslat</button>
+            </div>
+        </div>
+    </div>
+    <button id="open-chat" style="position: fixed; bottom: 20px; right: 20px; background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; z-index: 999;">Otevřít chat</button>
+    {/if}
+</div>
+
+<script>
+    var CURRENT_USER_ID = {$user->id};
+    {ifset $selectedRepair}
+        var CHAT_GET_MESSAGES_URL = {link Dashboard:getMessages, repairId => $selectedRepair->id};
+        var CHAT_SEND_MESSAGE_URL = {link Dashboard:sendMessage, repairId => $selectedRepair->id};
+    {else}
+        var CHAT_GET_MESSAGES_URL = null;
+        var CHAT_SEND_MESSAGE_URL = null;
+    {/ifset}
+</script>
+<script src="/js/chat.js"></script>
+
+<script n:syntax=off>
+document.addEventListener('DOMContentLoaded', function() {
+    const popup = document.getElementById('countdown-popup');
+    const overlay = document.getElementById('popup-overlay');
+    const closeButton = document.getElementById('close-popup');
+    const minimizedCountdown = document.getElementById('minimized-countdown');
+
+    if (popup && overlay) {
+        // Show popup and overlay initially
+        popup.style.display = 'block';
+        overlay.style.display = 'block';
+        setTimeout(() => overlay.classList.add('active'), 10);
+
+        function closePopup() {
+            popup.style.display = 'none';
+            overlay.style.display = 'none';
+            if (minimizedCountdown) minimizedCountdown.style.display = 'block';
+        }
+
+        closeButton.addEventListener('click', closePopup);
+        overlay.addEventListener('click', closePopup);
+    }
+
+    // Chat Window Toggle (unchanged)
+    const chatWindow = document.getElementById('chat-window');
+    const chatToggle = document.getElementById('chat-toggle');
+    const chatContent = document.getElementById('chat-content');
+    const openChatButton = document.getElementById('open-chat');
+
+    if (chatWindow && chatToggle && openChatButton) {
+        openChatButton.addEventListener('click', function() {
+            chatWindow.style.display = 'block';
+            chatContent.style.display = 'block';
+            chatToggle.innerHTML = '▼';
+            openChatButton.style.display = 'none';
+        });
+
+        chatToggle.addEventListener('click', function() {
+            if (chatContent.style.display === 'none') {
+                chatContent.style.display = 'block';
+                chatToggle.innerHTML = '▼';
+            } else {
+                chatContent.style.display = 'none';
+                chatToggle.innerHTML = '▲';
+                chatWindow.style.display = 'none';
+                openChatButton.style.display = 'block';
+            }
+        });
+    }
+});
+</script>
+{/block}
